@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: documentation
-          path: save_documentation/home/runner/work/Auto-Dock/Auto-Dock/Readme_files/README.en.md
+          path: /save_documentation/home/runner/work/Auto-Dock/Auto-Dock/Readme_files/README.en.md
