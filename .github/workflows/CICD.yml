@@ -25,7 +25,7 @@ jobs:
           python main.py --name_project "Automated Docs" --root_dir "./src" --ignore "['Readme_files', '__pycache__']" --languages "['en']" --parts 5
 
       - name: Upload Documentation
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: documentation
           path: README.md
