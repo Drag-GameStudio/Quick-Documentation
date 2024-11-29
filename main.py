@@ -80,6 +80,7 @@ class GptHandler:
     def get_answer(self, prompt: str) -> str:
         response = g4f.ChatCompletion.create(
             model="gpt-4",
+            max_tokens=500,
             messages=prompt,
             provider=self.provider
         )
@@ -94,12 +95,10 @@ class AnswerHandler:
         ]
     @utilities.time_manager
     def save_documentation(self, name: str = "README.md") -> None:
-        finaly_doc = ""
         for el in self.answer:
             if el["role"] == "assistent":
-                finaly_doc += "   " + el["content"]
-        with open(name, 'w', encoding="utf-8") as file:
-            file.write(finaly_doc)
+                with open(name, "a", encoding="utf-8") as file:
+                    file.write(el["content"])
     
     @utilities.time_manager
     def combine_response(self, new_response: str) -> None:
@@ -126,6 +125,7 @@ class AutoDock:
         
 
         self.language: int = config.language_type[language]
+        self.language_name: str = language
 
         req_hendler = ReqHendler(root_dir=root_dir, ignore_file=ignore_file, language=language, project_name=project_name)
         req_hendler.get_files_from_directory()
@@ -166,8 +166,9 @@ class AutoDock:
 
 
     @utilities.time_manager
-    def save_dock(self, answer_handler: AnswerHandler, name: str = "README.md") -> None:
-        answer_handler.save_documentation(name=name)
+    def save_dock(self, answer_handler: AnswerHandler, name: str = "Readme_files/README") -> None:
+        new_name = f"{name}.{self.language_name}.md"
+        answer_handler.save_documentation(name=new_name)
 
 
 if __name__ == "__main__":
@@ -175,18 +176,20 @@ if __name__ == "__main__":
     parser.add_argument("--name_project", type=str, help="name of project", required=True)
     parser.add_argument("--root_dir", type=str, help="root dir", required=True)
     parser.add_argument("--ignore", type=str, help="ignor files", required=True)
-    parser.add_argument("--language", type=str, help="language", required=True)
+    parser.add_argument("--languages", type=str, help="language", required=True)
     parser.add_argument("--parts", type=int, help="parts", required=True)
     
     
     args = parser.parse_args()
     project_name = args.name_project
     root_dir = args.root_dir
-    language = args.language
+    languages = ast.literal_eval(args.languages)
     ignore_file = ast.literal_eval(args.ignore)
     parts = args.parts
     
-    utilities.start(parts)
-    auto_dock = AutoDock(root_dir=root_dir, ignore_file=ignore_file, project_name=project_name, language=language)
-    answer_handler = auto_dock.get_response(parts=parts)
-    auto_dock.save_dock(answer_handler=answer_handler)
+
+    for language in languages:
+        utilities.start(parts)
+        auto_dock = AutoDock(root_dir=root_dir, ignore_file=ignore_file, project_name=project_name, language=language)
+        answer_handler = auto_dock.get_response(parts=parts)
+        auto_dock.save_dock(answer_handler=answer_handler)

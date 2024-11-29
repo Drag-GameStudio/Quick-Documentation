@@ -1,6 +1,7 @@
 import time 
 import os
 import sys
+import math
 sys.stdout.reconfigure(encoding='utf-8')
 from colorama import Fore, Back, Style, init
 #part = 8
@@ -18,7 +19,7 @@ class TextStyle:
 class ProgressBar():
     def __init__(self, part) -> None:
         self.procent = 0
-        self.all = (10 + 8 * part) * 2
+        self.all = math.ceil((10 + 8 * part) * 2.2)
         self.old = ""
     
     def progress(self, name):
