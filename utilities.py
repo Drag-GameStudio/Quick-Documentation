@@ -2,21 +2,36 @@ import time
 import os
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
-
+from colorama import Fore, Back, Style, init
 #part = 8
 #def = 10
+
+class TextStyle:
+    def __init__(self) -> None:
+        init()
+
+    def get_text(self, text: str, color: any = "", back: any = "") -> str:
+        return color + back + str(text) + Style.RESET_ALL
+
+
 
 class ProgressBar():
     def __init__(self, part) -> None:
         self.procent = 0
-        self.all = 10 + 8 * part
+        self.all = (10 + 8 * part) * 2
+        self.old = ""
     
     def progress(self, name):
-        print(f"\r {" " * 100}", end="")
+        ts = TextStyle()
+        print(f"\r {" " * (self.all + len(self.old) + 10)}", end="")
+
         self.procent += 1
-        bar = "#" * self.procent + " " * (self.all - self.procent)
+        bar = ts.get_text(text=" ", back=Back.WHITE) * self.procent + " " * (self.all - self.procent)
         procent = int((self.procent / self.all)  * 100)
-        print(f"\r {procent}% |{bar}|: {name}", end="")
+        procent = ts.get_text(text=str(procent) + "%", color=Fore.GREEN)
+        print(f"\r {procent} |{bar}|: {ts.get_text(name, color=Fore.CYAN)}", end="")
+
+        self.old = name
 
 bar: ProgressBar;
 

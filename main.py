@@ -73,13 +73,13 @@ class ReqHendler:
         return exit_prompt
 
 class GptHandler:
-    def __init__(self, provider: str = "ChatGptEs",) -> None:
+    def __init__(self, provider: str = "DarkAI") -> None:
         self.provider = getattr(g4f.Provider, provider, None)
 
     @utilities.time_manager
     def get_answer(self, prompt: str) -> str:
         response = g4f.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             messages=prompt,
             provider=self.provider
         )
@@ -171,7 +171,7 @@ class AutoDock:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Пример обработки параметров.")
+    parser = argparse.ArgumentParser(description="")
     parser.add_argument("--name_project", type=str, help="name of project", required=True)
     parser.add_argument("--root_dir", type=str, help="root dir", required=True)
     parser.add_argument("--ignore", type=str, help="ignor files", required=True)
