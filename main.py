@@ -95,6 +95,7 @@ class AnswerHandler:
         ]
     @utilities.time_manager
     def save_documentation(self, name: str = "README.md") -> None:
+        print(os.path.abspath(name))
         for el in self.answer:
             if el["role"] == "assistent":
                 with open(name, "a", encoding="utf-8") as file:
