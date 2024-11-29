@@ -22,7 +22,7 @@ jobs:
 
       - name: Generate Documentation
         run: |
-          python main.py --name_project "Automated Docs" --root_dir "./src" --ignore "['Readme_files', '__pycache__']" --languages "['en']" --parts 5
+          python main.py --name_project "Automated Docs" --root_dir "/home/runner/work/Auto-Dock/Auto-Dock" --ignore "['Readme_files', '__pycache__']" --languages "['en']" --parts 5
 
       - name: Upload Documentation
         uses: actions/upload-artifact@v3
