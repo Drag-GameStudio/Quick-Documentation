@@ -24,7 +24,7 @@ class ProgressBar():
     
     def progress(self, name):
         ts = TextStyle()
-        print(f"\r {" " * (self.all + len(self.old) + 10)}", end="")
+        print(f"\r {' ' * (self.all + len(self.old) + 10)}", end="")
 
         self.procent += 1
         bar = ts.get_text(text=" ", back=Back.WHITE) * self.procent + " " * (self.all - self.procent)

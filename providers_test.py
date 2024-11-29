@@ -47,7 +47,7 @@ class ProgressBar():
         self.old = ""
     
     def progress(self, name):
-        print(f"\r {" " * (self.all + len(self.old) + 10)}", end="")
+        print(f"\r {' ' * (self.all + len(self.old) + 10)}", end="")
 
         ts = TextStyle()
 
