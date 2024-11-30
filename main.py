@@ -94,7 +94,7 @@ class AnswerHandler:
     @utilities.time_manager
     def save_documentation(self, name: str = "README.md") -> None:
         try:
-            with open(name, "r", encoding="utf-8") as file:
+            with open(name, "w", encoding="utf-8") as file:
                     file.write("")
         except:
             pass
@@ -141,7 +141,7 @@ class AutoDock:
         answer_handler = self.get_part_of_response(prompt=self.prompt)
         for key in list(codes.keys()):
             
-            prompt = f"""{config.language_prompt[self.language][2]} name of project is {key} content of this project is {codes[key]}"""
+            prompt = f"""{config.language_prompt[self.language][2]} name of file is {key} content of this file is {codes[key]}"""
             answer_handler = self.get_part_of_response(prompt=prompt, answer_handler=answer_handler)
             time.sleep(5)
 

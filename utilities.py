@@ -20,7 +20,7 @@ class ProgressBar():
     def __init__(self, part) -> None:
         self.procent = 0
         self.all = (5 + (2 * part)) * 2
-        self.len = 40
+        self.len = 60
         self.old = ""
 
 
