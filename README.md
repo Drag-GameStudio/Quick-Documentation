@@ -326,80 +326,8 @@ python providers_test.py --name_model gpt-4
 ``` 
 
 In this case, replace `gpt-4` with the desired model name to be tested. The script will then display the progress of testing each provider and output the working providers with their responses.
-# Usage Documentation
 
-This section provides information on how to use the methods available in the project. The primary dependencies for this project are specified in the `requirements.txt` file, which includes `colorama==0.4.6` and `g4f==0.3.8.0`.
 
-## Methods
-
-### Method 1: `method_one()`
-
-```python
-def method_one(param1: Type1, param2: Type2) -> ReturnType:
-```
-
-#### Description
-This method does X, which allows you to achieve Y.
-
-#### Parameters
-- **param1** (Type1): Description of the first parameter.
-- **param2** (Type2): Description of the second parameter.
-
-#### Returns
-- **ReturnType**: Description of what the method returns.
-
----
-
-### Method 2: `method_two()`
-
-```python
-def method_two(param1: Type1) -> ReturnType:
-```
-
-#### Description
-This method processes the input to accomplish Z.
-
-#### Parameters
-- **param1** (Type1): Description of the input parameter.
-
-#### Returns
-- **ReturnType**: Description of the output that is generated.
-
----
-
-### Method 3: `method_three()`
-
-```python
-def method_three() -> None:
-```
-
-#### Description
-This method initializes the module or performs setup tasks.
-
-#### Returns
-- **None**: This method does not return any value.
-
----
-
-### Method 4: `method_four()`
-
-```python
-def method_four(param1: Type1, param2: Type2) -> ReturnType:
-```
-
-#### Description
-This method calculates the result based on the provided parameters.
-
-#### Parameters
-- **param1** (Type1): First input needed for calculation.
-- **param2** (Type2): Second input needed for calculation.
-
-#### Returns
-- **ReturnType**: The result of the calculation.
-
----
-
-Please refer to the respective method signatures for more details on parameter types and return types.
 # Utilities Documentation
 
 ## Usage
