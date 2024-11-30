@@ -19,7 +19,9 @@ class GenerateLanguagePrompt:
         return language_prompt
     
     def gen_prompt(self, language: str) -> list[str]:
-        BASE_PROMPT = [f"Write documentation in {language} language for this code in Markdown style (add style) describe the operating principle and examples of use what is this project for and describe the methods and classes. analyze the documentation yourself and add and add how use this project. Talk about all files(code)", f"projects name is", f"(Do not copy what has already been written, but continue from where you left off.)"]
+        BASE_PROMPT = [f"""Write general idea of code in Markdown (use Google Style) in {language} language write only about Overview, Features, Structure, Usage. Dont add ```markdown""", 
+                       f"projects name is", 
+                       f"""Write documentation for this file in Markdown (use Google Style) in {language} language. in start write name of file. write only about usage and discribe every methods. Dont add ```markdown"""]
         return BASE_PROMPT
 
 GLP = GenerateLanguagePrompt(language_type)
