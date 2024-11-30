@@ -93,9 +93,17 @@ class AnswerHandler:
         ]
     @utilities.time_manager
     def save_documentation(self, name: str = "README.md") -> None:
+        try:
+            with open(name, "r", encoding="utf-8") as file:
+                    file.write("")
+        except:
+            pass
+
+
         for el in self.answer:
             with open(name, "a", encoding="utf-8") as file:
                 file.write(el)
+                file.write("\n")
     
     def combine_response(self, new_response: str) -> None:
         self.answer.append(new_response)
@@ -131,30 +139,34 @@ class AutoDock:
     def get_response(self, codes: dict) -> AnswerHandler:
         answer_handler: AnswerHandler;
         answer_handler = self.get_part_of_response(prompt=self.prompt)
-        print(list(codes.keys()))
         for key in list(codes.keys()):
             
-            prompt = f"""{config.language_prompt[self.language]} name of file is {key} content of this file is {codes[key]}"""
-            try:
-                answer_handler = self.get_part_of_response(prompt=prompt, answer_handler=answer_handler)
-                time.sleep(5)
-            except:
-                print("Wrong")
+            prompt = f"""{config.language_prompt[self.language][2]} name of project is {key} content of this project is {codes[key]}"""
+            answer_handler = self.get_part_of_response(prompt=prompt, answer_handler=answer_handler)
+            time.sleep(5)
+
 
         return answer_handler
 
+
+
     @utilities.time_manager
     def get_part_of_response(self, prompt: str, answer_handler: AnswerHandler = None) -> AnswerHandler:
-        if answer_handler:
-            response = self.GPT.get_answer(prompt=prompt)
-            answer_handler.combine_response(response)
-            
-            return answer_handler
+        try:
+            if answer_handler:
+                response = self.GPT.get_answer(prompt=prompt)
+                answer_handler.combine_response(response)
+                
+                return answer_handler
 
-        else:
-            message = prompt
-            response = self.GPT.get_answer(prompt=message)
-            return AnswerHandler(response)
+            else:
+                message = prompt
+                response = self.GPT.get_answer(prompt=message)
+                return AnswerHandler(response)
+        except:
+            time.sleep(30)
+            return self.get_part_of_response(prompt=prompt, answer_handler=answer_handler)
+            
 
 
     @utilities.time_manager
@@ -176,10 +188,15 @@ if __name__ == "__main__":
     root_dir = args.root_dir
     languages = ast.literal_eval(args.languages)
     ignore_file = ast.literal_eval(args.ignore)
-    utilities.start(3)
-    auto_dock = AutoDock(root_dir=root_dir, ignore_file=ignore_file, project_name=project_name, language=languages[0])
-    codes = auto_dock.req_hendler.codes
-    utilities.start(len(list(codes.keys())))
 
-    answer_handler = auto_dock.get_response(codes=codes)
-    auto_dock.save_dock(answer_handler=answer_handler)
+    for language in languages:
+        utilities.start(3)
+        auto_dock = AutoDock(root_dir=root_dir, ignore_file=ignore_file, project_name=project_name, language=language)
+        codes = auto_dock.req_hendler.codes
+        utilities.start(len(list(codes.keys())))
+
+        answer_handler = auto_dock.get_response(codes=codes)
+        auto_dock.save_dock(answer_handler=answer_handler)
+
+        print(" ")
+        print(language)
