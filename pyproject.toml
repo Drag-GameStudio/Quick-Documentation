@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "quick-doc-py"
+version = "0.8.3"
+description = "This code can make documentation for your project"
+authors = ["Dmytro <sinica911@gmail.com>"]
+readme = "README.md"
+packages = [
+    { include = "quick_doc_py" }
+]
+
+
+[tool.poetry.scripts]
+gen-doc = "quick_doc_py.main:main"
+providers-test = "quick_doc_py.providers_test:main"
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+colorama="^0.4.6"
+g4f="^0.3.8.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

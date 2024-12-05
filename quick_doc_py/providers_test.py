@@ -10,7 +10,6 @@ import argparse
 def timeout_control(timeout):
     def func_control(func):
         def wrapper(*args, **kwargs):
-            # Обработчик результата, чтобы вернуть результат функции
             result_event = threading.Event()
             result = None
             
@@ -105,8 +104,9 @@ class ProviderTest:
         print(work_providers)
         return work_providers
 
-if __name__ == "__main__":
-    #gpt-4, gpt-3.5-turbo
+
+
+def main():
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("--name_model", type=str, help="name of model", required=True)
     args = parser.parse_args()
@@ -116,3 +116,7 @@ if __name__ == "__main__":
     PT = ProviderTest(model_name=model_name)
     PT.get_providers()
     PT.test_providers()
+
+if __name__ == "__main__":
+    #gpt-4, gpt-3.5-turbo
+    main()

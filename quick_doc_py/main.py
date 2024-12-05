@@ -1,12 +1,17 @@
 import g4f
 import g4f.Provider
-import config
 import os
 import sys
-import utilities
 import argparse
 import ast
 import time
+
+try:
+    from . import config
+    from . import utilities
+except:
+    import config
+    import utilities
 
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -73,13 +78,15 @@ class ReqHendler:
         return exit_prompt
 
 class GptHandler:
-    def __init__(self, provider: str = "DarkAI") -> None:
+    def __init__(self, provider: str, model: str) -> None:
         self.provider = getattr(g4f.Provider, provider, None)
+        self.model = model
+
 
     @utilities.time_manager
     def get_answer(self, prompt: str) -> str:
         response = g4f.ChatCompletion.create(
-            model="gpt-4",
+            model=self.model,
             messages=[{"role": "user", "content": prompt}],
             provider=self.provider
         )
@@ -103,7 +110,7 @@ class AnswerHandler:
         for el in self.answer:
             with open(name, "a", encoding="utf-8") as file:
                 file.write(el)
-                file.write("\n")
+                #file.write("\n")
     
     def combine_response(self, new_response: str) -> None:
         self.answer.append(new_response)
@@ -120,30 +127,38 @@ class AutoDock:
                  root_dir: str, 
                  language: str = "en", 
                  ignore_file: list[str] = None,
-                 project_name: str = "Python Project") -> None:
+                 project_name: str = "Python Project",
+                 provider: str = "Mhystical",
+                 gpt_model: str = "gpt-4",
+                 general_prompt: str = "",
+                 default_prompt: str = "") -> None:
         
 
         self.language: int = config.language_type[language]
         self.language_name: str = language
 
+        self.general_prompt = general_prompt
+        self.default_prompt = default_prompt
+
         req_hendler = ReqHendler(root_dir=root_dir, ignore_file=ignore_file, language=language, project_name=project_name)
         req_hendler.get_files_from_directory()
+        print(req_hendler.all_files)
         req_hendler.get_code_from_file()
 
         self.prompt = req_hendler.make_prompt()
         self.req_hendler = req_hendler
 
-        self.GPT = GptHandler(provider="DarkAI")
+        self.GPT = GptHandler(provider=provider, model=gpt_model)
         
     @utilities.time_manager
     def get_response(self, codes: dict) -> AnswerHandler:
         answer_handler: AnswerHandler;
-        answer_handler = self.get_part_of_response(prompt=self.prompt)
+        answer_handler = self.get_part_of_response(prompt=f'{self.prompt} Additional wishes: {self.general_prompt}')
         for key in list(codes.keys()):
             
-            prompt = f"""{config.language_prompt[self.language][2]} name of file is {key} content of this file is {codes[key]}"""
+            prompt = f"""{config.language_prompt[self.language][2]} Additional wishes: {self.default_prompt}. name of file is {key} content of this file is {codes[key]}"""
             answer_handler = self.get_part_of_response(prompt=prompt, answer_handler=answer_handler)
-            time.sleep(5)
+            time.sleep(20)
 
 
         return answer_handler
@@ -156,7 +171,6 @@ class AutoDock:
             if answer_handler:
                 response = self.GPT.get_answer(prompt=prompt)
                 answer_handler.combine_response(response)
-                
                 return answer_handler
 
             else:
@@ -164,35 +178,76 @@ class AutoDock:
                 response = self.GPT.get_answer(prompt=message)
                 return AnswerHandler(response)
         except:
-            time.sleep(30)
+            print("st again")
+            time.sleep(120)
+            print("end again")
             return self.get_part_of_response(prompt=prompt, answer_handler=answer_handler)
             
 
 
     @utilities.time_manager
-    def save_dock(self, answer_handler: AnswerHandler, name: str = "Readme_files/README") -> None:
+    def save_dock(self, answer_handler: AnswerHandler, name: str = "README") -> None:
         new_name = f"{name}.{self.language_name}.md"
         answer_handler.save_documentation(name=new_name)
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("--name_project", type=str, help="name of project", required=True)
     parser.add_argument("--root_dir", type=str, help="root dir", required=True)
     parser.add_argument("--ignore", type=str, help="ignor files", required=True)
     parser.add_argument("--languages", type=str, help="language", required=True)
-    
+
+    parser.add_argument("--gpt_version", type=str, help="gpt version", required=False)
+    parser.add_argument("--provider", type=str, help="provider", required=False)
+
+    parser.add_argument("--general_prompt", type=str, help="general prompt", required=False)
+    parser.add_argument("--default_prompt", type=str, help="default prompt", required=False)
+
+
     
     args = parser.parse_args()
+
+    worker(args)
+
+def worker(args):
     project_name = args.name_project
     root_dir = args.root_dir
     languages = ast.literal_eval(args.languages)
     ignore_file = ast.literal_eval(args.ignore)
 
+    gpt_version = "gpt-3.5-turbo"
+    provider = "DarkAI"
+
+    default_prompt = ""
+    general_prompt = ""
+
+    if args.gpt_version != None:
+        gpt_version = args.gpt_version
+
+    if args.provider != None:
+        provider= args.provider
+
+    if args.general_prompt != None:
+        general_prompt = args.general_prompt
+
+    if args.default_prompt != None:
+        default_prompt = args.default_prompt
+
+        
+
     for language in languages:
         utilities.start(3)
-        auto_dock = AutoDock(root_dir=root_dir, ignore_file=ignore_file, project_name=project_name, language=language)
+
+        auto_dock = AutoDock(root_dir=root_dir, 
+                             ignore_file=ignore_file, 
+                             project_name=project_name, 
+                             language=language, 
+                             gpt_model=gpt_version, 
+                             provider=provider)
+        
         codes = auto_dock.req_hendler.codes
+
         utilities.start(len(list(codes.keys())))
 
         answer_handler = auto_dock.get_response(codes=codes)
@@ -200,3 +255,7 @@ if __name__ == "__main__":
 
         print(" ")
         print(language)
+
+
+if __name__ == "__main__":
+    main()

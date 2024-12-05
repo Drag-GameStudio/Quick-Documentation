@@ -4,8 +4,7 @@ import sys
 import math
 sys.stdout.reconfigure(encoding='utf-8')
 from colorama import Fore, Back, Style, init
-#part = 8
-#def = 10
+
 
 class TextStyle:
     def __init__(self) -> None:
@@ -36,6 +35,8 @@ class ProgressBar():
         print(f"\r {procent} |{bar}|: {ts.get_text(name, color=Fore.CYAN)}", end="")
 
         self.old = name
+
+    
 
 bar: ProgressBar;
 
