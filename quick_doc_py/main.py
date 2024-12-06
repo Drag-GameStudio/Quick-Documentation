@@ -115,10 +115,18 @@ class AnswerHandler:
         for el in self.answer:
             with open(name, "a", encoding="utf-8") as file:
                 file.write(el)
-                #file.write("\n")
+                file.write("\n")
     
     def combine_response(self, new_response: str) -> None:
         self.answer.append(new_response)
+
+    def get_full_answer(self) -> str:
+        ex: str = ""
+        for el in self.answer:
+            ex += el
+            ex += "\n"
+
+        return ex
     
 
 
@@ -159,6 +167,7 @@ class AutoDock:
     def get_response(self, codes: dict) -> AnswerHandler:
         answer_handler: AnswerHandler;
         answer_handler = self.get_part_of_response(prompt=f'{self.prompt} Additional wishes: {self.general_prompt}')
+        self.answer_handler = answer_handler
         for key in list(codes.keys()):
             
             prompt = f"""{config.language_prompt[self.language][2]} Additional wishes: {self.default_prompt}. name of file is {key} content of this file is {codes[key]}"""
@@ -193,7 +202,12 @@ class AutoDock:
     @utilities.time_manager
     def save_dock(self, answer_handler: AnswerHandler, name: str = "README") -> None:
         new_name = f"{name}.{self.language_name}.md"
+        
         answer_handler.save_documentation(name=new_name)
+
+    def get_doc(self):
+        self.answer_handler.answer
+        pass
 
 
 def main():
@@ -217,9 +231,11 @@ def main():
     
     args = parser.parse_args()
 
-    worker(args)
+    docs = worker(args)
+    for doc in docs:
+        doc.save_dock(answer_handler=doc.answer_handler)
 
-def worker(args):
+def worker(args) -> list[AutoDock]:
     project_name = args.name_project
     root_dir = args.root_dir
     languages = ast.literal_eval(args.languages)
@@ -252,7 +268,7 @@ def worker(args):
         default_prompt = args.default_prompt
 
         
-
+    all_doc = []
     for language in languages:
         utilities.start(3)
 
@@ -268,10 +284,13 @@ def worker(args):
         utilities.start(len(list(codes.keys())))
 
         answer_handler = auto_dock.get_response(codes=codes)
-        auto_dock.save_dock(answer_handler=answer_handler)
+        #auto_dock.save_dock(answer_handler=answer_handler)
 
         print(" ")
         print(language)
+        all_doc.append(auto_dock)
+
+    return all_doc
 
 
 if __name__ == "__main__":

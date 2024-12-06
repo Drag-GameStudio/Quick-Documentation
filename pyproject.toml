@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quick-doc-py"
-version = "0.9.0"
+version = "0.9.3"
 description = "This code can make documentation for your project"
 authors = ["Dmytro <sinica911@gmail.com>"]
 readme = "README.md"
