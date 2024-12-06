@@ -25,7 +25,7 @@ class ReqHendler:
         
 
         self.root_dir = root_dir
-        self.language: int = config.language_type[language];
+        self.language: int = config.LANGUAGE_TYPE[language];
         self.ignor_file = ignore_file
         self.project_name = project_name
 
@@ -46,8 +46,13 @@ class ReqHendler:
     def is_ignored(self, path:str) -> bool:
         if self.ignor_file:
             for i_element in self.ignor_file:
-                if self.root_dir + i_element == path:
-                    return True
+                if i_element[0] == "*":
+                    path_datiles = path.split("/")
+                    if path_datiles[len(path_datiles) - 1] == i_element[1:]:
+                        return True
+                else:
+                    if self.root_dir + i_element == path:
+                        return True
                 
         return False
     
@@ -134,7 +139,7 @@ class AutoDock:
                  default_prompt: str = "") -> None:
         
 
-        self.language: int = config.language_type[language]
+        self.language: int = config.LANGUAGE_TYPE[language]
         self.language_name: str = language
 
         self.general_prompt = general_prompt
@@ -204,6 +209,10 @@ def main():
     parser.add_argument("--general_prompt", type=str, help="general prompt", required=False)
     parser.add_argument("--default_prompt", type=str, help="default prompt", required=False)
 
+    parser.add_argument("--with_git", type=bool, help="Is git used", required=False)
+
+
+
 
     
     args = parser.parse_args()
@@ -214,7 +223,15 @@ def worker(args):
     project_name = args.name_project
     root_dir = args.root_dir
     languages = ast.literal_eval(args.languages)
-    ignore_file = ast.literal_eval(args.ignore)
+    ignore_file: list = ast.literal_eval(args.ignore)
+
+    for ignored in config.DEFAULT_IGNORED_FILES:
+        ignore_file.append(ignored)
+    
+    if args.with_git != None:
+        if args.with_git:
+            for ignored in config.GIT_IGNORED_FILES:
+                ignore_file.append(ignored)
 
     gpt_version = "gpt-3.5-turbo"
     provider = "DarkAI"

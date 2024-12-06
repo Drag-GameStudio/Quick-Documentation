@@ -4,6 +4,7 @@ import threading
 import time
 from colorama import Fore, Back, Style, init
 import argparse
+import math
 
 
 
@@ -44,18 +45,17 @@ class ProgressBar():
         self.procent = 0
         self.all = part
         self.old = ""
+        self.len = 60
     
     def progress(self, name):
-        print(f"\r {' ' * (self.all + len(self.old) + 10)}", end="")
-
         ts = TextStyle()
-
+        print(f"\r {' ' * (self.len + len(self.old) + 10)}", end="")
         self.procent += 1
-        bar = ts.get_text(text=" ", back=Back.WHITE) * self.procent + " " * (self.all - self.procent)
-        procent = int((self.procent / self.all)  * 100)
+        procent = math.ceil((self.procent / self.all)  * 100)
+        proc = math.ceil(self.len / 100 *  procent)
+        bar = ts.get_text(text=" ", back=Back.WHITE) * proc + " " * (self.len - proc)
         procent = ts.get_text(text=str(procent) + "%", color=Fore.GREEN)
-        ex = f"\r {procent} |{bar}|: {ts.get_text(name, color=Fore.CYAN)}"
-        print(ex, end="")
+        print(f"\r {procent} |{bar}|: {ts.get_text(name, color=Fore.CYAN)}", end="")
 
         self.old = name
 

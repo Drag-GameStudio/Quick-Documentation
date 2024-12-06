@@ -1,4 +1,4 @@
-language_type = {
+LANGUAGE_TYPE = {
     "en": 0, 
     "ru": 1,
     "ua": 2,
@@ -6,6 +6,9 @@ language_type = {
     "es": 4, #испанский
     "pl": 5 #польский
 }
+
+DEFAULT_IGNORED_FILES = ["*README.md", "*__pycache__", "*dist"]
+GIT_IGNORED_FILES = ["*.github", "*.git", "*.venv", "*.gitignore"]
 
 class GenerateLanguagePrompt:
     def __init__(self, languages: dict[str, int]) -> None:
@@ -29,8 +32,7 @@ class GenerateLanguagePrompt:
                        Remember that it is not full documantation it is just addition. Dont add ```markdown"""]
         return BASE_PROMPT
 
-GLP = GenerateLanguagePrompt(language_type)
+GLP = GenerateLanguagePrompt(LANGUAGE_TYPE)
 language_prompt = GLP.generate()
 
-
-print(list(language_type.keys()))
+print(list(LANGUAGE_TYPE.keys()))
