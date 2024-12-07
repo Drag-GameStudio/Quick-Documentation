@@ -10,6 +10,8 @@ LANGUAGE_TYPE = {
 DEFAULT_IGNORED_FILES = ["*README.md", "*__pycache__", "*dist"]
 GIT_IGNORED_FILES = ["*.github", "*.git", "*.venv", "*.gitignore"]
 
+GPT_MODELS = ["gpt-4", "gpt-3.5-turbo"]
+
 class GenerateLanguagePrompt:
     def __init__(self, languages: dict[str, int]) -> None:
         self.languages = list(languages.keys())

@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "quick-doc-py"
-version = "0.9.3"
+version = "0.9.7"
 description = "This code can make documentation for your project"
 authors = ["Dmytro <sinica911@gmail.com>"]
 readme = "README.md"
 packages = [
     { include = "quick_doc_py" }
 ]
-repository="https://github.com/dima-on/Auto-Dock"
+repository="https://github.com/dima-on/Quick-Documentation"
 
 
 [tool.poetry.scripts]

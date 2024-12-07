@@ -105,6 +105,11 @@ class ProviderTest:
         return work_providers
 
 
+def provider_test(model_name: str) -> dict:
+    PT = ProviderTest(model_name=model_name)
+    PT.get_providers()
+    providers = PT.test_providers()
+    return providers
 
 def main():
     parser = argparse.ArgumentParser(description="")
@@ -113,9 +118,10 @@ def main():
 
     model_name = args.name_model
 
-    PT = ProviderTest(model_name=model_name)
-    PT.get_providers()
-    PT.test_providers()
+    providers = provider_test(model_name=model_name)
+    print(providers)
+
+
 
 if __name__ == "__main__":
     #gpt-4, gpt-3.5-turbo

@@ -153,6 +153,7 @@ class AutoDock:
         self.general_prompt = general_prompt
         self.default_prompt = default_prompt
 
+        self.root_dir = root_dir
         req_hendler = ReqHendler(root_dir=root_dir, ignore_file=ignore_file, language=language, project_name=project_name)
         req_hendler.get_files_from_directory()
         print(req_hendler.all_files)
@@ -201,7 +202,7 @@ class AutoDock:
 
     @utilities.time_manager
     def save_dock(self, answer_handler: AnswerHandler, name: str = "README") -> None:
-        new_name = f"{name}.{self.language_name}.md"
+        new_name = f"{self.root_dir}{name}.{self.language_name}.md"
         
         answer_handler.save_documentation(name=new_name)
 
@@ -226,9 +227,6 @@ def main():
     parser.add_argument("--with_git", type=bool, help="Is git used", required=False)
 
 
-
-
-    
     args = parser.parse_args()
 
     docs = worker(args)
@@ -292,6 +290,8 @@ def worker(args) -> list[AutoDock]:
 
     return all_doc
 
+def get_gpt_models() -> list[str]:
+    return config.GPT_MODELS
 
 if __name__ == "__main__":
     main()
