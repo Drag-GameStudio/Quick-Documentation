@@ -1,361 +1,369 @@
-Name: Quick Doc py
-
 Overview:
-Quick Doc py is a Python project that generates documentation for your project using an AI-powered language model, specifically applied to code organization, file structure, and functionality explanation. This project aims to make the documentation process more efficient and less time-consuming for developers and project maintainers.
+The `Quick-doc-py` is a Python library designed to create documentation for your projects quickly using AI models like gpt-3.5-turbo or gpt-4. 
 
 Features:
-- Supports multiple languages with corresponding translations
-- Reads and processes code files from a specified directory
-- Excludes specified files and directories from processing
-- Generates readable Markdown documentation
-- Sends prompt inquiries to an AI model to enhance the documentation scope with general or specific prompts
-- Organizes documentation into an overview, features, structure, and usage sections
-- Evaluates which code files to process based on ignored files list (default and git-specific)
-- Applies timeouts and progress bars for more user-friendly experience during code processing and AI response waiting
+- Generate documentation using AI models
+- Supports multiple languages such as English, Russian, Ukrainian, Chinese, Spanish, and Polish
+- Customizable prompts for documentation generation
+- Ability to ignore specific files or directories
+- Adds ability to work with Git repositories
 
 Structure:
-The repository structure comprises several Python files and modules with specific functionality. Notable components include:
-
-- `config.py`: Defines language-specific options and lists of ignored files.
-- `quick_doc_py`: The main module containing the main.py script which handles command-line arguments and starts the documentation generation.
-- `providers_test.py`: A testing module for evaluating different AI providers.
-- `utilities.py`: General utility module that provides helper functions like progress bars and time-tracking decorators.
-
+- `./.gitignore`: File that contains all ignored files and directories for Git.
+- `./pyproject.toml`: File that defines the project settings and dependencies such as Python version and required packages (colorama, g4f, requests).
+- `./quick_doc_py/`: Directory that contains main classes, config, and utility functions for generating documentation.
+  - `config.py`: File with language codes, ignored files, and GPT models.
+  - `log_logic/req.py`: Contains the `ReqToServer` class responsible for handling requests to the server.
+  - `main.py`: File containing the main function and classes responsible for handling the overall documentation process.
+  - `providers_test.py`: Script to test g4f model providers for compatibility.
+  - `utilities.py`: File with utility functions and classes like `TextStyle`, `ProgressBar`, and `time_manager`.
+  
 Usage:
-To use Quick Doc py, simply clone or download the repository and navigate to the root directory. Install the required dependencies using pip:
+To generate documentation for your project, run the following command in your terminal or command prompt:
 
-```python
-pip install -r requirements.txt
+```
+python -m quick_doc_py.main --name_project "Your_project_name" --root_dir /path/to/your/projects --ignore "['*.venv', '*.git', '*.venv', '*.gitignore']" --languages "[ 'en', 'ua']" --gpt_version "gpt-3.5-turbo" --provider "Mhystical" --general_prompt "Additional wishes: " --default_prompt "Write general idea of code in Markdown (use Google Style).
 ```
 
-Once installed, you can start the documentation generation with the command:
+You can also create a file called `setup.cfg` in your project root and add commands to `entry_points` like this:
 
-```bash
-python main.py --name_project "Your Project Name" --root_dir "path/to/your/project" --ignore '["*.venv", "*.git", "*.github"]' --languages '{"en", "ru", "ua"}' --general_prompt "Provide additional context about the code organization" --default_prompt "Describe the specific file xyz.py"
 ```
-
-Replace placeholders as necessary and customize prompts according to your needs. The documentation will then be generated in Markdown format, per language, in the project's root directory. You can find the generated documentation files in the matching language-specific name, for example, README.en.md, README.ru.md, and so on.# pyproject.toml Markdown Documentation
-
-This documentation provides a description of the `pyproject.toml` file in Markdown format for the `quick-doc-py` project. This guide covers the usage, and describes each of the methods available within the file.
-
-## Usage
-
-The `pyproject.toml` file is used in Python projects to manage project settings and dependencies. Below is the content of this specific file, along with explanations for each section:
-
-```toml
-[tool.poetry]
-name = "quick-doc-py"
-version = "0.9.3"
-description = "This code can make documentation for your project"
-authors = ["Dmytro <sinica911@gmail.com>"]
-readme = "README.md"
-packages = [
-    { include = "quick_doc_py" }
+[options.entry_points]
+console_scripts=[
+    'gendoc = quick_doc_py.main:main'
 ]
-repository="https://github.com/dima-on/Auto-Dock"
-
-[tool.poetry.scripts]
-gen-doc = "quick_doc_py.main:main"
-providers-test = "quick_doc_py.providers_test:main"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-colorama="^0.4.6"
-g4f="^0.3.8.3"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 ```
 
-### Sections
-- `[tool.poetry]`: Contains metadata about the project. The `name`, `version`, and `description` are self-explanatory. The `authors` field is a list of contributors, where each author is represented as "name" (optional) and email. The `readme` points to the location of the README file in the repository. The `packages` field lists the packages to be included in the distribution.
+This will allow you to generate documentation by running the following command:
 
-- `[tool.poetry.scripts]`: Defines commands that users can run from the command line after installing the package.
-   - `gen-doc`: Invokes the `main` function from `quick_doc_py` package.
-   - `providers-test`: Invokes the `main` function from `quick_doc_py.providers_test` module.
-
-- `[tool.poetry.dependencies]`: Defines the project dependencies required to run the code.
-   - `python`: The minimum Python version required for the project.
-   - `colorama` and `g4f`: Dependencies for color formatting in the output.
-
-- `[build-system]`: Specifies the build system requirements. In this case, `poetry-core` is the required dependency, and `poetry.core.masonry.api` serves as the build backend.
-
-## Running the script
-
-To execute the script, install the module using pip:
-
-```bash
-pip install ./path_to/quick-doc-py
+```
+gendoc --name_project "Your_project_name" --root_dir /path/to/your/projects --ignore "['*.venv', '*.git', '*.venv', '*.gitignore']" --languages "[ 'en', 'ua']" --gpt_version "gpt-3.5-turbo" --provider "Mhystical" --general_prompt "Additional wishes: " --default_prompt "Write general idea of code in Markdown (use Google Style).
 ```
 
-After installation, you can run the script from the command line using the following commands:
-
-```shell
-gen-doc -- generates documentation for your project
-providers-test -- tests the providers (optional)
-```
-
-Use the provided commands to create documentation or test the code's functionality. Remember to modify these commands to suit your project specifics according to the usage requirements.# Config
-
-This file (`config.py`) contains various settings and configurations for generating language-specific prompts.
-
-## Configurations
-
-The following variables are defined in this file:
-
-### LANGUAGE_TYPE
-
-A dictionary mapping language codes to their corresponding numeric values:
-
-- `"en"`: 0 - English
-- `"ru"`: 1 - Russian
-- `"ua"`: 2 - Ukrainian
-- `"chs"`: 3 - Simplified Chinese
-- `"es"`: 4 - Spanish
-- `"pl"`: 5 - Polish
-
-### DEFAULT_IGNORED_FILES
-
-A list of file patterns to be ignored in the default search:
-
-- `"*README.md"` - all README.md files
-- `"*__pycache__"` - all directories named `__pycache__`
-- `"*dist"` - all directories and files named `dist`
-
-### GIT_IGNORED_FILES
-
-A list of Git-ignored directory patterns:
-
-- `"*.github"` - all files and directories starting with `.github`
-- `"*.git"` - the `.git` directory
-- `"*.venv"` - all directories and files named `venv`
-- `"*.gitignore"` - the `.gitignore` file
+The generated documentation will be saved in the project directory as `README.en.md`, `README.ua.md`, etc., corresponding to the selected language.
+# File Documentation
 
 ## Usage
 
-To use this file, you can import the configurations in another Python script:
+This `.gitignore` file is used to specify files and directories that should be ignored by Git version control. By placing specific entries in this file, Git will exclude those items from being tracked or uploaded to the repository.
 
-```python
-from config import LANGUAGE_TYPE, DEFAULT_IGNORED_FILES, GIT_IGNORED_FILES
+To customize the `gitignore` file based on your project requirements, simply add the desired file or directory paths to this file. Each entry should be placed on a new line and can include wildcard characters for pattern matching. For example:
+- `/__pycache__`: Ignores the `__pycache__` directory.
+- `*.pyc`: Ignores all files with the `.pyc` extension.
+
+Once the desired entries are added, execute the following Git commands to apply the changes:
+```
+$ git add .gitignore
+$ git commit -m "Add custom gitignore settings"
+$ git push
 ```
 
-To create and use language prompts, you would use the `GenerateLanguagePrompt` class:
+After pushing the changes, files and directories specified in the `.gitignore` file will no longer be committed to the repository.
+
+For more information about the `.gitignore` file, visit the following link: [Gitignore Documentation](https://git-scm.com/docs/gitignore)
+
+## Methods
+
+#### N/A
+(This is an addition to the partial documentation, as the complete documentation is not being requested.)
+
+---
+
+*Note: This documentation is a supplementary addition, and the full documentation was not composed in this response.*
+# pyproject.toml Documentation
+
+## Usage
+
+This `pyproject.toml` file is used to manage dependencies and build settings for projects created with Python. It is particularly useful for specifying the required dependencies for your project and handling the build process.
+
+Here's a brief explanation of each section in the file:
+
+## Sections
+
+### [tool.poetry]
+
+This section specifies general settings for your project:
+
+- `name`: The name of the package.
+- `version`: The version of the package.
+- `description`: A brief description of the package.
+- `authors`: The author(s) of the package and their contact information.
+- `readme`: The path to the README file.
+- `packages`: A list of packages to include in the project.
+- `repository`: The repository URL for the project.
+
+### [tool.poetry.scripts]
+
+This section specifies the script names and their corresponding entry points:
+
+- `gen-doc`: Generates documentation for the project.
+- `providers-test`: Runs tests for providers implemented in the project.
+
+### [tool.poetry.dependencies]
+
+This section specifies the dependencies required for your project:
+
+- `python`: Default Python version to use when running the project.
+- `colorama`: Library for cross-platform color support in terminal applications.
+- `g4f`: Library for colored output log formatting.
+- `requests`: Library for making HTTP requests in Python.
+
+### [build-system]
+
+This section specifies the build system requirements and settings:
+
+- `requires`: The required build system dependencies.
+- `build-backend`: The build backend (Poetry's `poetry.core.masonry.api`) to be used for assembling the project.
+
+By understanding the various sections and settings in this file, you can effectively manage dependencies, generate documentation, and configure your project for an efficient development process.
+# config.py
+
+This document describes how to use the `config.py` file, including its methods and parameters.
+
+## Language Type
+The `LANGUAGE_TYPE` constant is a dictionary where the keys are language names in string format, and the values are integer codes corresponding to those languages. For example:
 
 ```python
-from config import GenerateLanguagePrompt, LANGUAGE_TYPE
+LANGUAGE_TYPE = {
+    "en": 0,    # English
+    "ru": 1,    # Russian
+    "ua": 2,    # Ukrainian
+    "chs": 3,   # Simplified Chinese
+    "es": 4,    # Spanish
+    "pl": 5     # Polish
+}
+```
 
-# Create an instance of GenerateLanguagePrompt class
+## Ignored Files
+The script provides two lists, `DEFAULT_IGNORED_FILES` and `GIT_IGNORED_FILES`, containing patterns of files to be ignored.
+
+- `DEFAULT_IGNORED_FILES`: Patterns including README files, cache folders, and dist folders.
+- `GIT_IGNORED_FILES`: Patterns like GitHub folders, Git folders, virtual environment folders, and `.gitignore` files.
+
+## GPT_MODELS
+`GPT_MODELS` is a list consisting of two strings representing GPT model names: "gpt-4" and "gpt-3.5-turbo".
+
+## GenerateLanguagePrompt Class
+The `GenerateLanguagePrompt` class is used to generate language-specific prompts. It is initialized with a dictionary of languages and their corresponding integer codes.
+
+### generate() method
+```python
+def generate(self) -> dict:
+```
+Generates a dictionary with prompts for different languages, where keys are integer codes representing the languages and values are language-specific prompts.
+
+### gen_prompt() method
+```python
+def gen_prompt(self, language: str) -> list[str]:
+```
+Generates a list of prompts corresponding to the given language. The prompts include:
+
+1. A general idea of Markdown code in the mentioned language.
+2. The name of the project.
+3. A description of how to write documentation for the given file in Markdown, focusing on usage and method descriptions, according to Google Style.
+
+## Example
+```python
 GLP = GenerateLanguagePrompt(LANGUAGE_TYPE)
-
-# Generate language-specific prompts
 language_prompt = GLP.generate()
 
-# Print available language codes
 print(list(LANGUAGE_TYPE.keys()))
-```# AutoDock Documentation
-
-This guide explains the usage and running of the `main.py` file, which automates the creation of documentation for a given project.
-
-## Requirements
-
-- Python 3.8 or higher is required.
-- Installation of required packages (`g4f`, `argparse`, `ast`, `os`, `sys`, `time`) must be pre-installed.
-
-## Installation
-
-The file `main.py` provides needed functions to run AutoDock's functionality. To set it up, simply clone the repository with the file in it or download the `main.py` file.
-
-## Description
-
-AutoDock reads code files in the given directory, generates prompts for the user, and sends them to the GPT-4 (using the g4f library) to create file-specific documentation. All responses are then saved into `README.{language}.md` files.
-
-## AutoDock Usage
-
-First, make sure the ROOT_DIR contains the project files you wish to document. Then, use the command below:
-
-```bash
-python main.py --name_project "Your Project Name" --root_dir "/path/to/your/project" --ignore '["*.env", "*.log"]' --languages '["en", "ru"]' --gpt_version "gpt-4" --provider "OpenAI" --general_prompt "Please generate a documentation for the below files" --default_prompt "Describe the functionality of the following function or class."
 ```
 
-The arguments are:
-- `--name_project`: The name for your project to be used in the documentation.
-- `--root_dir`: The path to the directory containing the project files.
-- `--ignore`: A list of ignored files. E.g., `["*.env", "*.log"]`. To use g4f's default ignore lists, you can pass an empty list along with the default lists during initialization: `--ignore '[]' --default_ignore '["*.env", "*.log"]'`.
-- `--languages`: A list of languages to generate documentation in.
-- `--gpt_version`: Chose a GPT version, such as "gpt-3.5-turbo" or "gpt-4".
-- `--provider`: API provider, e.g., "OpenAI" or "DarkAI".
-- `--general_prompt`: A general prompt used in the documentation.
-- `--default_prompt`: A default prompt used for individual files.
-- `--with_git`: An optional boolean that, when supplied, includes `.gitignore`-listed files, defaulting to `None`.
-
-Please note that AutoDock accepts additional command-line arguments that can be found within the `main()` function to pass to the `argparse.ArgumentParser()`.
-
-## GptHandler & AnswerHandler Usage
-
-These classes complement AutoDock by providing functions to handle user prompts and GPT responses. While you can use them to manage inputs and outputs independently, they're designed to interoperate with AutoDock.
-
-Example of GptHandler:
-
-```python
-gpt_handler = GptHandler("OpenAI", "gpt-4")
-response = gpt_handler.get_answer("What is the purpose of the `main.py` file?")
-```
-
-Example of AnswerHandler:
-
-```python
-answer_handler = AnswerHandler(response.content)
-answer_handler.save_documentation(name="documentation.md")
-```
-
-## Powering up
-
-To adjust the script parameters, you can edit them directly in the `main` function, or create an external `.env` file (as Python's `dotenv`, for example) and load the values:
-
-```python
-from dotenv import load_dotenv
-
-load_dotenv()
-
-ROOT_DIR = os.getenv("ROOT_DIR")
-```
-
-This will make the script much more flexible and easier to test in development.
-
-Remember that this documentation describes the additional functionalities of the file only. For more exhaustive information, refer to the [full documentation](url_to_full_documentation.md).
-
-Wishing you good luck on your documentation automation journey!# providers_test.py Quick Documentation
-
-This document describes the usage of the `providers_test.py` file which is a Python script. It is designed to test the providers of a given model and check which of the providers are functioning properly.
-
-### Description of Methods
-
-#### timeout_control
-
-The `timeout_control` function is a decorator that defines a timeout for the function it wraps. If the wrapped function does not return within the specified timeout, it will return `None`.
-
-#### TextStyle
-
-This class enables styling of text with colors and backgrounds. The class has the following methods:
-
-- `__init__`: Initializes the `TextStyle` object, also initializes the Colorama library.
-
-- `get_text`: Returns a formatted text string with the specified color and background. Parameters:
-  - `text`: Text to be formatted.
-  - `color`: Color style for the text. If not specified, will be a plain text.
-  - `back`: Background style for the text. If not specified, will be a plain text.
-
-#### ProgressBar
-
-This class defines a progress bar that updates with a given percentage completion. It consists of the following methods:
-
-- `__init__`: Accepts the total parts (`self.all`) that the progress bar should display.
-- `progress`: Prints the progress bar on the console, updating the progress percentage. Parameters:
-  - `name`: Name of the current task being displayed on the progress bar.
-
-#### ProviderTest
-
-This class represents an instance of provider testing for a given model. It includes the following methods:
-
-- `__init__`: Initializes the `ProviderTest` object with a given model name.
-- `get_providers`: Fetches all the providers available for the given model. Initializes a `ProgressBar` to monitor the test's progress.
-- `test_provider`: Tests an individual provider to see if it is functioning properly. Parameters:
-  - `provider_name`: The name of the provider to test.
-- `test_provider_timeout`: Tests a provider within a set timeout period. Parameters:
-  - `provider`: The provider object to test.
-- `test_providers`: Tests all the providers for the given model, displaying their progress through a `ProgressBar`, and returns a dictionary with working providers and their responses.
-
-#### main
-
-The `main` function is the entry point for the script. It parses the command-line arguments, initializes the `ProviderTest` object with the given model name, and runs the tests.
-
-### How to Use
-
-To use `providers_test.py`, run the script from the command line with the `--name_model` flag followed by the model name:
-
-```bash
-python providers_test.py --name_model modelName
-```
-
-Replace `modelName` with the name of the model you want to test. This will display the providers that are working correctly for the specified model.# utilities.py Quick Documentation
+This example demonstrates how to create an instance of the `GenerateLanguagePrompt` class with the declared `LANGUAGE_TYPE`, generate language-specific prompts, and print available languages. The resulting prompts could be used by other parts of the application to instruct users on writing documentation for files in different languages following conventions like the Google Style.
+# ReqToServer
+This file contains the `ReqToServer` class which interacts with a server using HTTP requests. The class allows the creation of a new session and adding data to the current session.
 
 ## Usage
-
-This file contains a set of utility classes and functions to create a progress bar, manage execution time, and apply text formatting using Colorama.
-
-## Classes and Methods
-
-### `TextStyle`
-
-The `TextStyle` class provides a method to format the text with custom colors and background styles.
-
-- **get_text(text: str, color: any = "", back: any = "") → str**
-  - Description: This method accepts a text string and allows you to optionally specify color and background for text formatting. It uses the Colorama library for this purpose.
-
-### `ProgressBar`
-
-The `ProgressBar` class is used to create a simple progress bar that updates throughout the execution.
-
-- **__init__(self, part)**
-  - Description: The constructor initializes the progress bar based on the given `part`, which is a factor used for constructing the progress bar.
-
-- **progress(self, name)**
-  - Description: The `progress` method updates the progress bar with a `name` parameter that is displayed next to the progress bar inside the terminal.
-
-### Time Management Decorator
-
-This file also includes a `time_manager` decorator that can be applied to a function to print progress and execution time.
-
-- **time\_manager(func)**
-  - Description: This is a decorator function that wraps the given `func`. It logs the start and end of the function execution, displaying the function name and time taken to complete the function.
-
-## Example Usage
+To start using this class, import it into your Python file:
 
 ```python
-from utilities import start, ProgressBar, time_manager
-from time import sleep
-
-@time_manager
-def example_function():
-    for i in range(5):
-        print(i)
-        sleep(1)
-
-start(part=1)  # Set the part according to the desired progress bar size.
-example_function()
+from quick_doc_py.log_logic.req import ReqToServer
 ```
 
-This example demonstrates how to apply the `time_manager` decorator, and use `start` and `ProgressBar` classes within your code to inform users about progress and function execution time.from quick_doc_py.core import generate_quick_doc
+Create an instance of the `ReqToServer` class by providing the server's URL (default is "https://sdwwwwsvbvgfgfd.pythonanywhere.com"). You can then use the following methods to interact with the server:
 
-__all__ = ['generate_quick_doc']
+### Methods
 
-def generate_quick_doc(file_path, output_file_path):
-    """
-    Generate quick code documentation for a Python file.
+#### `__init__(self, link: str = "https://sdwwwwsvbvgfgfd.pythonanywhere.com")`
+Initializes the `ReqToServer` class providing the server's URL (default is "https://sdwwwwsvbvgfgfd.pythonanywhere.com").
 
-    This function takes in a Python file path and generates quick documentation
-    using the Google Style format. The documentation will be saved to the output
-    file path specified.
+#### `create_session(self) -> str`
+Creates a new session on the server and returns the response text.
 
-    Args:
-        file_path (str): The path to the Python source file.
-        output_file_path (str): The path to save the generated documentation.
+#### `add_to_session(self, session_code: str, data: dict) -> None`
+Adds data to the current session using the provided session_code. The session_code is typically obtained from the `create_session` method.
 
-    Returns:
-        None
-    """
+Example usage:
 
+```python
+req = ReqToServer()
 
-    # Read the content of the Python file.
-    with open(file_path, 'r') as file:
-        content = file.readlines()
+session_code = req.create_session()
+data = {"key1": "value1", "key2": "value2"}
 
-    # Generate the quick documentation.
-    generated_doc = generate_quick_doc_py(content)
+req.add_to_session(session_code, data)
+```
+**quick_doc_py/main.py**
 
-    # Write the generated documentation to the output file.
-    with open(output_file_path, 'w') as file:
-        file.write(generated_doc)
+This Python script automatically generates documentation for any project using the information from the source code files. It uses an AI model like ChatGPT to create the documentation with the user's prompts and setting preferences.
 
-    print(f"Successfully generated quick documentation: {output_file_path}")
+To use this script, set the preferences and run the script with the desired parameters.
+
+**Usage**
+
+To use this script, you need to pass a few arguments:
+
+- `--name_project`: The name of your project.
+- `--root_dir`: The location of your project.
+- `--ignore`: A list of files to ignore during documentation generation (the list should be in the form of a string, where each file is a line, e.g., ["`*.pyc`", "`__pycache__/`"]).
+- `--languages`: A list of languages to generate documentation in (the list should be in the form of a string, where each language is a line, e.g., ["`en`", "`es`"]).
+- `--gpt_version`: (Optional) Version of the GPT model.
+- `--provider`: (Optional) ChatGPT provider.
+- `--general_prompt`: (Optional) General prompt for the model to generate documentation.
+- `--default_prompt`: (Optional) Default prompt for specific files.
+- `--with_git`: (Optional) Help to generate a `.gitignore` file for the project using the script.
+
+To generate documentation for a project, you need to use the `main()` function and provide required arguments. The documentation will be saved in the designated folder with the language-specific file names.
+
+```python
+if __name__ == "__main__":
+    main()
+```
+
+**Methods overview**
+
+- `ReqHendler`: Searches for files in the specified directory, filters out ignored files, and collects the content of each file.
+  - `__init__(root_dir, language, ignore_file, project_name)`: initializes a ReqHendler object.
+  - `get_files_from_directory(current_path)`: Finds files within the given directory and its sub-directories, excludes ignored files.
+  - `is_ignored(path)`: Checks if the given file or directory is in the ignored list.
+  - `get_code_from_file()`: Reads the content of each file and stores it in a dictionary.
+  - `make_prompt()`: Creates a prompt with the content of files in the project.
+
+- `GptHandler`: Interacts with a ChatGPT model to generate responses using the user's prompts.
+  - `__init__(provider, model)`: Initializes GptHandler object.
+  - `get_answer(prompt)`: Sends a prompt to ChatGPT and gets the generated response.
+
+- `AnswerHandler`: Receives responses from GptHandler and processes them to generate documentation.
+  - `__init__(answer)`: Initializes an AnswerHandler object.
+  - `combine_response(new_response)`: Appends a new response to the existing answer.
+  - `save_documentation(name)`: Saves the generated documentation in a file.
+  - `get_full_answer()`: Returns the final generated documentation.
+
+- `AutoDock`: Main class, combines ReqHendler, GptHandler, and AnswerHandler functionalities to generate project documentation.
+  - `__init__(root_dir, language, ignore_file, project, provider, gpt_model, general_prompt, default_prompt)`: Initializes AutoDock object.
+  - `get_response(codes)`: Calculates the response for each file in the project using the GptHandler and processes the answers with AnswerHandler.
+  - `get_part_of_response(prompt, answer_handler)`: Handling specific prompts for part of the response.
+  - `save_dock(answer_handler, name)`: Saves the generated documentation.
+  - `get_doc()`: Retrieves the generated documentation.
+
+- `main()`: Main function where the arguments are parsed, and the documentation process starts.
+
+**Example of running the script:**
+
+```bash
+python main.py --name_project "MyProject" --root_dir "./MyProject" --ignore "['*.pyc', '__pycache__/', 'venv/']" --languages "['en', 'es']"
+```
+
+This will generate documentation in both English and Spanish for the "MyProject" project.
+
+# Providers Test Documentation
+
+This documentation provides an overview of the `providers_test.py` file, focusing on the usage and description of methods.
+
+The purpose of this script is to test various providers in the `g4f` library and check which ones work successfully.
+
+## Classes
+
+### ProgressBar
+
+The `ProgressBar` class is responsible for creating and updating a progress bar for the testing process. It takes a single parameter in its constructor:
+
+- `part` (int): The total parts of the task.
+
+#### Methods
+
+- `progress(name)`: Updates the progress bar with the given name.
+
+### TextStyle
+
+The `TextStyle` class helps in formatting text with colors and backgrounds for the console output.
+
+#### Methods
+
+- `get_text(text, color=None, back=None)`: Returns the input text with specified color and background. If color or background is not given, no formatting is applied.
+
+### ProviderTest
+
+The `ProviderTest` class handles testing of different providers in the `g4f.Provider` module. It takes the following parameters in its constructor:
+
+- `model_name` (str): The name of the model to be used for testing.
+
+#### Methods
+
+- `get_providers()`: Retrieves the list of providers from the `g4f.Provider` module.
+- `test_provioder(provider_name)`: Tests a given provider and checks if it works or not.
+- `test_provider_timeout(provider)` (timeout_control): Tests the given provider with a timeout of 30 seconds.
+- `test_providers()`: Tests all the available providers and returns those that work.
+
+### Functions
+
+#### provider_test(model_name)
+
+This function initializes the `ProviderTest` class and tests all the available providers.
+
+- `model_name` (str): The name of the model to be used for testing.
+
+#### main()
+
+The main function presents an `argparse` interface to allow input of the model name as command-line argument. It calls the `provider_test` function and prints the result.
+# utilities.py
+
+This module provides utilities for managing the progress bar, coloring text, and timing function execution. The following functions and classes are now available for usage:
+
+## ProgressBar Class
+
+**Purpose**: Helps create a simple progress bar to visualize operation progress.
+
+### Methods:
+- __init__(self, part): Initializes the progress bar with the given part.
+- progress(self, name): Updates and prints the progress bar indicating the current operation.
+
+### Usage:
+```python
+bar = ProgressBar(part=1)  # Initializes a progress bar for part 1
+
+bar.progress('Initialization')  # Prints progress bar
+```
+
+## TextStyle Class
+
+**Purpose**: Helps colorize the console output to make it more readable.
+
+### Methods:
+- get_text(self, text, color=*, back=*): Returns the input text with specified color and background.
+
+### Usage:
+```python
+text_color = TextStyle()
+colored_text = text_color.get_text('Hello', color=Fore.RED, back=Back.GREEN)  # Colored text
+print(colored_text)
+```
+
+## Function decorators
+
+### time_manager
+
+**Purpose**: Adds a progress bar and measures the execution time of a given function.
+
+### Usage:
+```python
+@time_manager
+def example_function():
+    time.sleep(3)  # Example operation
+    return "Operation completed"
+
+print(example_function())  # Returns the result of the operation with progress bar and time information
+```
+
+The provided decorators and classes can be modified according to your specific needs. They help you create more appealing and informative console outputs.

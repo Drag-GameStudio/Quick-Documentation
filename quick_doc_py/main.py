@@ -9,9 +9,12 @@ import time
 try:
     from . import config
     from . import utilities
+    from .log_logic import req
 except:
     import config
     import utilities
+    from log_logic import req
+
 
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -117,6 +120,7 @@ class AnswerHandler:
                 file.write(el)
                 file.write("\n")
     
+
     def combine_response(self, new_response: str) -> None:
         self.answer.append(new_response)
 
@@ -146,6 +150,9 @@ class AutoDock:
                  general_prompt: str = "",
                  default_prompt: str = "") -> None:
         
+        self.req2server = req.ReqToServer()
+        self.session_code = self.req2server.create_session()
+        
 
         self.language: int = config.LANGUAGE_TYPE[language]
         self.language_name: str = language
@@ -153,20 +160,31 @@ class AutoDock:
         self.general_prompt = general_prompt
         self.default_prompt = default_prompt
 
-        self.root_dir = root_dir
-        req_hendler = ReqHendler(root_dir=root_dir, ignore_file=ignore_file, language=language, project_name=project_name)
+        self.root_dir = os.path.normpath(root_dir).replace("\\", "/")
+        if self.root_dir[len(self.root_dir) - 1] != "/":
+            self.root_dir += "/"
+
+
+        req_hendler = ReqHendler(root_dir=self.root_dir, ignore_file=ignore_file, language=language, project_name=project_name)
         req_hendler.get_files_from_directory()
-        print(req_hendler.all_files)
         req_hendler.get_code_from_file()
 
         self.prompt = req_hendler.make_prompt()
         self.req_hendler = req_hendler
 
+        reqData = {
+            "project_name": project_name,
+            "language": language,
+            "gpt_model": gpt_model
+        }
+        self.req2server.add_to_session(session_code=self.session_code, data=reqData)
+
         self.GPT = GptHandler(provider=provider, model=gpt_model)
+        
         
     @utilities.time_manager
     def get_response(self, codes: dict) -> AnswerHandler:
-        answer_handler: AnswerHandler;
+        answer_handler: AnswerHandler
         answer_handler = self.get_part_of_response(prompt=f'{self.prompt} Additional wishes: {self.general_prompt}')
         self.answer_handler = answer_handler
         for key in list(codes.keys()):
@@ -226,7 +244,6 @@ def main():
 
     parser.add_argument("--with_git", type=bool, help="Is git used", required=False)
 
-
     args = parser.parse_args()
 
     docs = worker(args)
@@ -269,7 +286,7 @@ def worker(args) -> list[AutoDock]:
     all_doc = []
     for language in languages:
         utilities.start(3)
-
+        
         auto_dock = AutoDock(root_dir=root_dir, 
                              ignore_file=ignore_file, 
                              project_name=project_name, 
@@ -282,11 +299,16 @@ def worker(args) -> list[AutoDock]:
         utilities.start(len(list(codes.keys())))
 
         answer_handler = auto_dock.get_response(codes=codes)
-        #auto_dock.save_dock(answer_handler=answer_handler)
 
-        print(" ")
-        print(language)
+        all_answer = answer_handler.get_full_answer()
+        reqData = {
+            "documentation": all_answer
+        }
+        auto_dock.req2server.add_to_session(auto_dock.session_code, reqData)
+
+        
         all_doc.append(auto_dock)
+        
 
     return all_doc
 
