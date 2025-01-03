@@ -108,28 +108,22 @@ class AnswerHandler:
         ]
     @utilities.time_manager
     def save_documentation(self, name: str = "README.md") -> None:
-        try:
-            with open(name, "w", encoding="utf-8") as file:
-                    file.write("")
-        except:
-            pass
-
-
-        for el in self.answer:
-            with open(name, "a", encoding="utf-8") as file:
-                file.write(el)
-                file.write("\n")
+        with open(name, "w") as file:
+            file.write(self.get_full_answer())
     
 
     def combine_response(self, new_response: str) -> None:
         self.answer.append(new_response)
 
     def get_full_answer(self) -> str:
-        ex: str = ""
+        ex: str = """Thanks for using quick-doc-py.
+If you like this project, you can support it on https://ko-fi.com/draggamestudio. 
+Your support helps improve the project and add new features. Thank you!
+\n"""
         for el in self.answer:
             ex += el
             ex += "\n"
-
+        ex += """Created by quick-doc-py"""
         return ex
     
 
