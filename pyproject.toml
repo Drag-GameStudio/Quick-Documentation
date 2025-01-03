@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quick-doc-py"
-version = "1.0.3"
+version = "1.0.9"
 description = "This code can make documentation for your project"
 authors = ["Dmytro <sinica911@gmail.com>"]
 readme = "README.md"
@@ -16,10 +16,10 @@ providers-test = "quick_doc_py.providers_test:main"
 
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 colorama = "^0.4.6"
-g4f = "^0.3.8.3"  
 requests = "^2.32.3"
+g4f = "^0.4.0.4"
 
 
 

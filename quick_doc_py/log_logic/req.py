@@ -16,7 +16,7 @@ class ReqToServer:
         add = "/add_to_session"
         full_link = f"{self.link}{add}"
         new_data = {
-            "session_key": 1,
+            "session_key": session_code,
         }
         for key in list(data.keys()):
             new_data[key] = data[key]
