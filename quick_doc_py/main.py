@@ -116,14 +116,11 @@ class AnswerHandler:
         self.answer.append(new_response)
 
     def get_full_answer(self) -> str:
-        ex: str = """Thanks for using quick-doc-py.
-If you like this project, you can support it on https://ko-fi.com/draggamestudio. 
-Your support helps improve the project and add new features. Thank you!
-\n"""
+        ex: str = """## Thanks for using [quick-doc-py](https://pypi.org/project/quick-doc-py). If you like this project, you can support it on [ko-fi](https://ko-fi.com/draggamestudio). Your support helps improve the project and add new features. Thank you!\n"""
         for el in self.answer:
             ex += el
             ex += "\n"
-        ex += """Created by quick-doc-py"""
+        ex += """### Created by [quick-doc-py](https://pypi.org/project/quick-doc-py)"""
         return ex
     
 
@@ -259,7 +256,7 @@ def worker(args) -> list[AutoDock]:
                 ignore_file.append(ignored)
 
     gpt_version = "gpt-3.5-turbo"
-    provider = "DarkAI"
+    provider = "GizAI"
 
     default_prompt = ""
     general_prompt = ""
