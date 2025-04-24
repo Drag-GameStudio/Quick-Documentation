@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quick-doc-py"
-version = "1.1.7"
+version = "1.1.9"
 description = "This code can make documentation for your project"
 authors = ["Dmytro <sinica911@gmail.com>"]
 readme = "README.md"
@@ -11,7 +11,7 @@ license = "MIT"
 repository="https://github.com/Drag-GameStudio/Quick-Documentation"
 
 [tool.poetry.scripts]
-gen-doc = "quick_doc_py.main:main"
+gen-doc = "quick_doc_py.manage:main"
 providers-test = "quick_doc_py.providers_test:main"
 
 
